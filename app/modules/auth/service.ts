@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { config } from "../../config/env";
 import { AuthRepository } from "./repository";
+import { User } from "./model";
 
 const authRepo = new AuthRepository();
 
@@ -48,5 +49,44 @@ export class AuthService {
     } catch (error) {
       return null;
     }
+  }
+
+  async generatePasswordResetCode(email: string): Promise<string | null> {
+    const user = await User.findOne({ email });
+
+    if (!user) return null;
+
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.otp = resetCode;
+    user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    return resetCode;
+  }
+
+  /**
+   * Verify the OTP code and reset the password.
+   */
+  async verifyResetCodeAndUpdatePassword(
+    email: string,
+    code: string,
+    newPassword: string
+  ): Promise<boolean> {
+    const user = await User.findOne({ email });
+
+    if (!user || user.otp !== code) return false;
+
+    if (user.otpExpires && user.otpExpires < new Date()) {
+      return false;
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    user.otp = null;
+    user.otpExpires = null;
+    await user.save();
+
+    return true;
   }
 }

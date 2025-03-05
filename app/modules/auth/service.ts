@@ -74,16 +74,23 @@ export class AuthService {
     newPassword: string
   ): Promise<boolean> {
     const user = await User.findOne({ email });
-    console.log("sjabfjdsbaj", user);
 
     if (!user || user.otp !== code) return false;
 
-    if (user.otpExpires && user.otpExpires < new Date()) {
+    // Check if OTP expiration time exists and is greater than 2 minutes
+    const now = new Date();
+    if (!user.otpExpires || user.otpExpires < now) {
       return false;
     }
 
+    // Ensure OTP is valid for at least 2 minutes
+    const minValidTime = new Date(user.otpExpires.getTime() - 2 * 60 * 1000);
+    if (now < minValidTime) {
+      return false;
+    }
+
+    // Hash new password and save
     const salt = await bcrypt.genSalt(10);
-    console.log("ksanfsdafnsbafd", salt);
     user.password = await bcrypt.hash(newPassword, salt);
     user.otp = null;
     user.otpExpires = null;

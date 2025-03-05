@@ -74,6 +74,7 @@ export class AuthService {
     newPassword: string
   ): Promise<boolean> {
     const user = await User.findOne({ email });
+    console.log("skanfsdajbadggbkjasd", user);
 
     if (!user || user.otp !== code) {
       console.log("Invalid OTP or user not found.");

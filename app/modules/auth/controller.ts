@@ -99,11 +99,11 @@ export class AuthController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { email, code, newPassword } = req.body;
+      const { email, otp, newPassword } = req.body;
       console.log("ksanNS BODY", req.body);
       const success = await authService.verifyResetCodeAndUpdatePassword(
         email,
-        code,
+        otp,
         newPassword
       );
 

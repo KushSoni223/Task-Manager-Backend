@@ -70,7 +70,7 @@ export class AuthService {
    */
   async verifyResetCodeAndUpdatePassword(
     email: string,
-    code: string,
+    otp: string,
     newPassword: string
   ): Promise<boolean> {
     const user = await User.findOne({ email });
@@ -80,10 +80,10 @@ export class AuthService {
       return false;
     }
 
-    console.log("Stored OTP:", user.otp, "| Received OTP:", code);
+    console.log("Stored OTP:", user.otp, "| Received OTP:", otp);
 
     // Ensure OTP is stored as a string and matches the provided one
-    if (String(user.otp).trim() !== String(code).trim()) {
+    if (String(user.otp).trim() !== String(otp).trim()) {
       console.log("Invalid OTP.");
       return false;
     }

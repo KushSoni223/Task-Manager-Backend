@@ -65,9 +65,6 @@ export class AuthService {
     return resetCode;
   }
 
-  /**
-   * Verify the OTP code and reset the password.
-   */
   async verifyResetCodeAndUpdatePassword(
     email: string,
     otp: string,
@@ -76,38 +73,27 @@ export class AuthService {
     const user = await User.findOne({ email });
 
     if (!user) {
-      console.log("User not found.");
       return false;
     }
 
-    console.log("Stored OTP:", user.otp, "| Received OTP:", otp);
-
-    // Ensure OTP is stored as a string and matches the provided one
     if (String(user.otp).trim() !== String(otp).trim()) {
       console.log("Invalid OTP.");
       return false;
     }
 
-    // Convert otpExpires to Date if needed
     const otpExpires = new Date(user.otpExpires || "");
     const now = new Date();
 
-    console.log("OTP Expiry Time:", otpExpires, "| Current Time:", now);
-
-    // Ensure OTP hasn't expired (valid for at least 2 minutes)
     if (now > otpExpires) {
-      console.log("OTP expired.");
       return false;
     }
 
-    // Hash and update password
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
     user.otp = null;
     user.otpExpires = null;
     await user.save();
 
-    console.log("Password updated successfully.");
     return true;
   }
 }

@@ -90,9 +90,6 @@ export class AuthController {
     }
   }
 
-  /**
-   * Verify the reset code and update the password.
-   */
   async resetPassword(
     req: Request,
     res: Response,
@@ -100,7 +97,6 @@ export class AuthController {
   ): Promise<void> {
     try {
       const { email, otp, newPassword } = req.body;
-      console.log("ksanNS BODY", req.body);
       const success = await authService.verifyResetCodeAndUpdatePassword(
         email,
         otp,

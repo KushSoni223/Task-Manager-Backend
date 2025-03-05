@@ -1,0 +1,113 @@
+# Backend Setup Guide
+
+## Prerequisites
+
+Before setting up the backend, ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (Latest LTS version recommended)
+- [MongoDB](https://www.mongodb.com/) (Locally or cloud-based using [MongoDB Atlas](https://www.mongodb.com/atlas))
+- [Yarn](https://yarnpkg.com/) or [npm](https://www.npmjs.com/)
+
+## Installation
+
+1. **Clone the repository:**
+
+   ```sh
+   git clone https://github.com/your-repo.git
+   cd your-repo/backend
+   ```
+
+2. **Install dependencies:**
+   ```sh
+   yarn install
+   # or
+   npm install
+   ```
+
+## Configuration
+
+1. **Create a `.env` file in the root directory:**
+
+   ```sh
+   touch .env
+   ```
+
+2. **Add the following environment variables:**
+
+   ```env
+   PORT=5000
+   MONGO_URI=mongodb://mongo:VMBupxZxkzOoaZWEUGJYKbBeLUcHLQSj@mongodb.railway.internal:27017/task-manager
+   JWT_SECRET=db8af0dea40dac107b7d1867af59db829eb4cd53980d259731854af318902dbfcd4446a0b54509c1a816a81f85f9ae531c6f04efbb5adf32dab97292e8d8a3c1
+   EMAIL_USER=kushsoni099@gmail.com
+   EMAIL_PASS=dyaluajtjhvjlstz
+   REFRESH_TOKEN_SECRET=f34c59f9bd2070efb14b7ba5aa61f79ebb590efdb57155bc6ec39e86b077824adf84a6560421c684173b6cd9b5afe61c8ecb6486c39fcd5e9f5bb18742bb905e
+   ```
+
+   - Replace `<username>`, `<password>`, and `dbname` with your MongoDB credentials.
+   - Replace `your_jwt_secret` with a strong secret key for JWT authentication.
+   - Use an **App Password** instead of your actual email password (if using Gmail SMTP).
+
+## Running the Server
+
+### Development Mode
+
+```sh
+yarn dev
+# or
+npm run dev
+```
+
+### Production Mode
+
+```sh
+yarn start
+# or
+npm start
+```
+
+## API Endpoints
+
+### Authentication
+
+- **POST** `/api/auth/signup` - User signup
+- **POST** `/api/auth/login` - User login
+- **POST** `/api/auth/request-password-reset` - Request a password reset
+- **POST** `/api/auth/verify-reset-code` - Verify OTP and reset password
+
+### Task Management (Example)
+
+- **GET** `/api/tasks` - Get all tasks
+- **POST** `/api/tasks` - Create a new task
+- **PUT** `/api/tasks/:id` - Update a task
+- **DELETE** `/api/tasks/:id` - Delete a task
+
+## Testing
+
+To test the API, you can use [Postman](https://www.postman.com/) or [Thunder Client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client).
+
+## Deployment
+
+### Using PM2 for Process Management
+
+```sh
+commit and push only
+```
+
+### Deploy on a Cloud Server (Example: DigitalOcean, AWS, Heroku)
+
+- Use `MongoDB Atlas` for database hosting.
+- Deploy using `Docker`, `Vercel`, or `Railway` if needed.
+
+i am using railway for now
+
+## Troubleshooting
+
+### Common Issues
+
+- **MongoDB connection error:** Ensure MongoDB URI is correctly set in `.env`.
+- **SMTP authentication failed:** Enable App Passwords for your email provider.
+- **Port already in use:** Change the `PORT` variable in `.env` or use `lsof -i :5000` to find and kill the process.
+
+---
+
+### Happy Coding! 🚀

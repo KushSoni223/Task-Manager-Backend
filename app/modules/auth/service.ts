@@ -74,30 +74,34 @@ export class AuthService {
     newPassword: string
   ): Promise<boolean> {
     const user = await User.findOne({ email });
-    console.log("skanfsdajbadggbkjasd", user);
 
-    if (!user || user?.otp?.trim() !== code?.trim()) {
-      console.log("Trimmed OTP mismatch!");
+    if (!user) {
+      console.log("User not found.");
       return false;
     }
 
-    // Check if OTP expiration time is valid
+    console.log("Stored OTP:", user.otp, "| Received OTP:", code);
+
+    // Ensure OTP is stored as a string and matches the provided one
+    if (String(user.otp).trim() !== String(code).trim()) {
+      console.log("Invalid OTP.");
+      return false;
+    }
+
+    // Convert otpExpires to Date if needed
+    const otpExpires = new Date(user.otpExpires || "");
     const now = new Date();
-    if (!user.otpExpires || user.otpExpires < now) {
+
+    console.log("OTP Expiry Time:", otpExpires, "| Current Time:", now);
+
+    // Ensure OTP hasn't expired (valid for at least 2 minutes)
+    if (now > otpExpires) {
       console.log("OTP expired.");
       return false;
     }
 
-    // Ensure OTP has at least 2 minutes of validity from the creation time
-    const otpCreatedTime = new Date(user.otpExpires.getTime() - 5 * 60 * 1000); // Assuming OTP is valid for 5 mins
-    if (now < new Date(otpCreatedTime.getTime() + 2 * 60 * 1000)) {
-      console.log("OTP is too new, less than 2 minutes old.");
-      return false;
-    }
-
-    // Hash new password and update user
+    // Hash and update password
     const salt = await bcrypt.genSalt(10);
-    console.log("sana s asnd f", salt);
     user.password = await bcrypt.hash(newPassword, salt);
     user.otp = null;
     user.otpExpires = null;

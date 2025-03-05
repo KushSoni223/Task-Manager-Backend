@@ -76,8 +76,8 @@ export class AuthService {
     const user = await User.findOne({ email });
     console.log("skanfsdajbadggbkjasd", user);
 
-    if (!user || user.otp !== code) {
-      console.log("Invalid OTP or user not found.");
+    if (!user || user?.otp?.trim() !== code?.trim()) {
+      console.log("Trimmed OTP mismatch!");
       return false;
     }
 

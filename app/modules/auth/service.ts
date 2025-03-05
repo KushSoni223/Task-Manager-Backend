@@ -74,6 +74,7 @@ export class AuthService {
     newPassword: string
   ): Promise<boolean> {
     const user = await User.findOne({ email });
+    console.log("sjabfjdsbaj", user);
 
     if (!user || user.otp !== code) return false;
 
@@ -82,6 +83,7 @@ export class AuthService {
     }
 
     const salt = await bcrypt.genSalt(10);
+    console.log("ksanfsdafnsbafd", salt);
     user.password = await bcrypt.hash(newPassword, salt);
     user.otp = null;
     user.otpExpires = null;

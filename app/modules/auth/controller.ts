@@ -100,6 +100,7 @@ export class AuthController {
   ): Promise<void> {
     try {
       const { email, code, newPassword } = req.body;
+      console.log("ksanNS BODY", req.body);
       const success = await authService.verifyResetCodeAndUpdatePassword(
         email,
         code,
